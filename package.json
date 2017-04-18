@@ -1,0 +1,34 @@
+{
+  "name": "npmg",
+  "version": "0.0.1",
+  "description": "Publish to npm and git tag at the same time",
+  "main": "index.js",
+  "preferGlobal": true,
+  "engines": {
+    "node": "7.8"
+  },
+  "bin": {
+    "npmg": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "npm",
+    "git",
+    "publish",
+    "tag"
+  ],
+  "author": "Mark Glagola",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-to-editorconfig": "^1.2.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "commander": "^2.9.0"
+  }
+}
