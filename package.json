@@ -1,6 +1,6 @@
 {
   "name": "npmgit-publish",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Publish to npm and git tag at the same time",
   "main": "index.js",
   "preferGlobal": true,

@@ -9,12 +9,12 @@ const program = require('commander');
 const _exec = require("child_process").exec;
 const fs = Promise.promisifyAll(require("fs"));
 
-function exec (cmd) {
+function exec (cmd, ignoreStterr = false) {
     return new Promise((resolve, reject) => {
         _exec(cmd, (error, stdout, stderr) => {
             if (error) {
                 return reject(error);
-            } else if (stderr) {
+            } else if (!ignoreStterr && stderr) {
                 return reject(stderr);
             } else {
                 return resolve(stdout);
@@ -41,8 +41,8 @@ program
             await exec('npm publish');
             await exec(`git tag -a v${version} -m "${message}"`);
             console.log(`Git tagged version: ${version} with message: ${message}`);
-            await exec(`git push --tags`);
-            console.log(`Psuhed tagged version, ${version}, to git repo`);
+            await exec(`git push --tags`, true);
+            console.log(`Pushed tagged version, ${version}, to git repo`);
             process.exit(0);
         } catch (error) {
             throw error;
