@@ -5,6 +5,7 @@
 const Promise = require('bluebird');
 global.Promise = Promise;
 
+const pkg = require('./package.json');
 const program = require('commander');
 const _exec = require("child_process").exec;
 const fs = Promise.promisifyAll(require("fs"));
@@ -24,13 +25,9 @@ function exec (cmd, ignoreStterr = false) {
     });
 }
 
-const logGreen = (message) => console.log(chalk.green(message));
-const logRed = (message) => console.log(chalk.red(message));
-
-program.version('1.0');
-
 program
     .command('publish <message>')
+    .description('Publishes to npm and tags git at the same time based off package.json version')
     .action(async (message) => {
         if (!message) {
             console.error('No git tag message supplied, see help');
@@ -46,17 +43,20 @@ program
             const data = await fs.readFileAsync('package.json', 'utf8');
             const json = JSON.parse(data);
             const version = json.version;
-            logGreen(`Published npm version: ${version}`);
+            console.log(`Published npm version: ${chalk.bold.green(version)}`);
             await exec('npm publish');
             await exec(`git tag -a v${version} -m "${message}"`);
-            logGreen(`Git tagged version: ${version} with message: ${message}`);
+            console.log(`Git tagged version: ${chalk.bold.green(version)} with message: ${chalk.bold.green(message)}`);
             await exec(`git push --tags`, true);
-            logGreen(`Pushed tagged version, ${version}, to git repo`);
+            console.log(`Pushed tagged version, ${chalk.bold.green(version)}, to git repo`);
             process.exit(0);
         } catch (error) {
-            logRed(error.message);
+            console.log(chalk.red(error.message));
             process.exit(1);
         }
     });
 
-program.parse(process.argv);
+program
+    .version(pkg.version)
+    .description(pkg.description)
+    .parse(process.argv);
