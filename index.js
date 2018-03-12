@@ -1,7 +1,5 @@
 #! /usr/bin/env node
 
-'use strict';
-
 const Promise = require('bluebird');
 global.Promise = Promise;
 
@@ -10,6 +8,7 @@ const program = require('commander');
 const _exec = require("child_process").exec;
 const fs = Promise.promisifyAll(require("fs"));
 const chalk = require('chalk');
+const { logVersionCheck } = require('validate-package-version');
 
 function exec (cmd, ignoreStterr = false) {
     return new Promise((resolve, reject) => {
@@ -25,14 +24,24 @@ function exec (cmd, ignoreStterr = false) {
     });
 }
 
+const act = (func, ignoreVersionCheck = false) => async (...args) => {
+    if (!ignoreVersionCheck) {
+        await logVersionCheck(pkg);
+    }
+    return func(...args);
+};
+
 program
     .command('publish <message>')
     .description('Publishes to npm and tags git at the same time based off package.json version')
-    .action(async (message) => {
+    .action(act(async (message) => {
         if (!message) {
             console.error('No git tag message supplied, see help');
             return;
         }
+
+        console.log('hippie!!!');
+        process.exit(0);
 
         try {
             const isDirty = (await exec('git status -s')).length > 0;
@@ -54,7 +63,7 @@ program
             console.log(chalk.red(error.message));
             process.exit(1);
         }
-    });
+    }));
 
 program
     .version(pkg.version)
