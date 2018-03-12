@@ -40,9 +40,6 @@ program
             return;
         }
 
-        console.log('hippie!!!');
-        process.exit(0);
-
         try {
             const isDirty = (await exec('git status -s')).length > 0;
             if (isDirty) {
