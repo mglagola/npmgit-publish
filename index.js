@@ -10,12 +10,27 @@ const fs = Promise.promisifyAll(require("fs"));
 const chalk = require('chalk');
 const { logVersionCheck } = require('validate-package-version');
 
+const isNil = (x) => x === null || x === undefined;
+const isEmpty = (value) => {
+    if (isNil(value)) {
+        return true;
+    }
+    switch (typeof value) {
+    case 'string':
+        return value.length === 0;
+    case 'object':
+        return Object.keys(value).length === 0;
+    default:
+        return false;
+    }
+};
+
 function exec (cmd, ignoreStterr = false) {
     return new Promise((resolve, reject) => {
         _exec(cmd, (error, stdout, stderr) => {
             if (error) {
                 return reject(error);
-            } else if (!ignoreStterr && stderr) {
+            } else if (!ignoreStterr && !isEmpty(stderr)) {
                 return reject(stderr);
             } else {
                 return resolve(stdout);
