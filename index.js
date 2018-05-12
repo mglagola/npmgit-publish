@@ -49,15 +49,17 @@ const act = (func, ignoreVersionCheck = false) => async (...args) => {
 program
     .command('publish <message>')
     .description('Publishes to npm and tags git at the same time based off package.json version')
-    .action(act(async (message) => {
+    .option('-i, --ignore-dirty')
+    .action(act(async (message, options) => {
         if (!message) {
             console.error('No git tag message supplied, see help');
             return;
         }
 
         try {
+            const { ignoreDirty = false } = options;
             const isDirty = (await exec('git status -s')).length > 0;
-            if (isDirty) {
+            if (isDirty && !ignoreDirty) {
                 throw new Error('Seems like you have uncommitted changes locally, aborting publish');
             }
 
@@ -65,7 +67,7 @@ program
             const json = JSON.parse(data);
             const version = json.version;
             console.log(`Published npm version: ${chalk.bold.green(version)}`);
-            await exec('npm publish');
+            // await exec('npm publish');
             await exec(`git tag -a v${version} -m "${message}"`);
             console.log(`Git tagged version: ${chalk.bold.green(version)} with message: ${chalk.bold.green(message)}`);
             await exec(`git push --tags`, true);
