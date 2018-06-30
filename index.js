@@ -67,14 +67,14 @@ program
             const json = JSON.parse(data);
             const version = json.version;
             console.log(`Published npm version: ${chalk.bold.green(version)}`);
-            // await exec('npm publish');
+            await exec('npm publish');
             await exec(`git tag -a v${version} -m "${message}"`);
             console.log(`Git tagged version: ${chalk.bold.green(version)} with message: ${chalk.bold.green(message)}`);
             await exec(`git push --tags`, true);
             console.log(`Pushed tagged version, ${chalk.bold.green(version)}, to git repo`);
             process.exit(0);
         } catch (error) {
-            console.log(chalk.red(error.message));
+            console.log(chalk.red(error));
             process.exit(1);
         }
     }));
