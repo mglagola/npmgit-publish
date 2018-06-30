@@ -66,8 +66,8 @@ program
             const data = await fs.readFileAsync('package.json', 'utf8');
             const json = JSON.parse(data);
             const version = json.version;
+            await exec('npm publish', true);
             console.log(`Published npm version: ${chalk.bold.green(version)}`);
-            await exec('npm publish');
             await exec(`git tag -a v${version} -m "${message}"`);
             console.log(`Git tagged version: ${chalk.bold.green(version)} with message: ${chalk.bold.green(message)}`);
             await exec(`git push --tags`, true);
